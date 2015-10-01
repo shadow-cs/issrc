@@ -89,7 +89,7 @@ echo - Setup.dpr
 if "%DELPHIXEROOT%"=="" (
 "%DELPHI2009ROOT%\bin\dcc32.exe" --no-config --peflags:1 --string-checks:off -Q -B -H -W %1 -U"%DELPHI2009ROOT%\lib;..\Components;..\Components\UniPs\Source" -E..\Files -DPS_MINIVCL;PS_NOGRAPHCONST;PS_PANSICHAR;PS_NOINTERFACEGUIDBRACKETS Setup.dpr
 ) else (
-"%DELPHIXEROOT%\bin\dcc32.exe" --no-config --peflags:1 -NSsystem;system.win;winapi;vcl -Q -B -H -W %1 -U"%DELPHIXEROOT%\lib\win32\release;..\Components;..\Components\UniPs\Source" -E..\Files -DPS_MINIVCL;PS_NOGRAPHCONST;PS_PANSICHAR;PS_NOINTERFACEGUIDBRACKETS Setup.dpr
+"%DELPHIXEROOT%\bin\dcc32.exe" --no-config --peflags:1 -NSsystem;system.win;winapi;vcl;vcl.imaging -Q -B -H -W %1 -U"%DELPHIXEROOT%\lib\win32\release;..\Components;..\Components\UniPs\Source" -E..\Files -DPS_MINIVCL;PS_NOGRAPHCONST;PS_PANSICHAR;PS_NOINTERFACEGUIDBRACKETS Setup.dpr
 )
 if errorlevel 1 goto failed
 

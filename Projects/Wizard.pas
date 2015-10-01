@@ -664,6 +664,26 @@ constructor TWizardForm.Create(AOwner: TComponent);
     end;
   end;
 
+  procedure SetGrpahic(const Image: TBitmapImage; const Graphic: TGraphic);
+  var
+    TmpBitmap: TBitmap;
+  begin
+    if Graphic is TBitmap then
+      Image.Bitmap := TBitmap(Graphic)
+    else begin
+      TmpBitmap := TBitmap.Create;
+      try
+        TmpBitmap.SetSize(Graphic.Width, Graphic.Height);
+        TmpBitmap.Canvas.Brush.Color := Image.BackColor;
+        TmpBitmap.Canvas.FillRect(Rect(0, 0, Graphic.Width, Graphic.Height));
+        TmpBitmap.Canvas.Draw(0, 0, Graphic);
+        Image.Bitmap := TmpBitmap;
+      finally
+        TmpBitmap.Free;
+      end;
+    end;
+  end;
+
 var
   X, W1, W2: Integer;
   SystemMenu: HMENU;
@@ -747,14 +767,14 @@ begin
 
   { Initialize images }
   WizardBitmapImage.BackColor := SetupHeader.WizardImageBackColor;
-  WizardBitmapImage.Bitmap := WizardImage;
+  SetGrpahic(WizardBitmapImage, WizardImage);
   WizardBitmapImage.Center := True;
   WizardBitmapImage.Stretch := (shWizardImageStretch in SetupHeader.Options);
   WizardBitmapImage2.BackColor := SetupHeader.WizardImageBackColor;
-  WizardBitmapImage2.Bitmap := WizardImage;
+  SetGrpahic(WizardBitmapImage2, WizardImage);
   WizardBitmapImage2.Center := True;
   WizardBitmapImage2.Stretch := (shWizardImageStretch in SetupHeader.Options);
-  WizardSmallBitmapImage.Bitmap := WizardSmallImage;
+  SetGrpahic(WizardSmallBitmapImage, WizardSmallImage);
   WizardSmallBitmapImage.Stretch := (shWizardImageStretch in SetupHeader.Options);
   PreparingErrorBitmapImage.Bitmap.Handle := LoadBitmap(HInstance, 'STOPIMAGE');
   PreparingErrorBitmapImage.ReplaceColor := clSilver;

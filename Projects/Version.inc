@@ -103,3 +103,7 @@
   the Halt calls in Setup.dpr for example). }
 {$MESSAGE ERROR 'Delphi 2007''s Halt is broken. See comments in source code.'}
 {$ENDIF}
+
+{$IFDEF IS_D12}
+  {$DEFINE HASPNG}
+{$ENDIF}

@@ -16,7 +16,11 @@ interface
 uses
   Windows, SysUtils, Messages, Classes, Graphics, Controls, Forms, Dialogs,
   SetupForm, StdCtrls, Struct, DebugStruct, Int64Em, CmnFunc, CmnFunc2,
-  SetupTypes, ScriptRunner, BidiUtils, RestartManager;
+  SetupTypes, ScriptRunner, BidiUtils, RestartManager
+{$IFDEF HASPNG}
+  , PngImage
+{$ENDIF}
+  ;
 
 type
   TMainForm = class(TSetupForm)
@@ -131,8 +135,8 @@ var
   SetupHeader: TSetupHeader;
   LangOptions: TSetupLanguageEntry;
   Entries: array[TEntryType] of TList;
-  WizardImage: TBitmap;
-  WizardSmallImage: TBitmap;
+  WizardImage: TGraphic;
+  WizardSmallImage: TGraphic;
   CloseApplicationsFilterList: TStringList;
 
   { User options }
@@ -2549,15 +2553,27 @@ var
     end;
   end;
 
-  procedure ReadWizardImage(var WizardImage: TBitmap; const R: TCompressedBlockReader);
+  procedure ReadWizardImage(var WizardImage: TGraphic; const R: TCompressedBlockReader);
   var
     MemStream: TMemoryStream;
+    GraphicClass: TGraphicClass;
+{$IFDEF HASPNG}
+    Hdr: AnsiChar;
+{$ENDIF}
   begin
     MemStream := TMemoryStream.Create;
     try
       ReadFileIntoStream(MemStream, R);
       MemStream.Seek(0, soFromBeginning);
-      WizardImage := TBitmap.Create;
+      GraphicClass := TBitmap;
+{$IFDEF HASPNG}
+      MemStream.ReadBuffer(Hdr, 1);
+      MemStream.Seek(0, soFromBeginning);
+      // PNG magic prefix (if not PNG it is certainly not a BMP either)
+      if Hdr = #$89 then
+        GraphicClass:=TPngImage;
+{$ENDIF}
+      WizardImage := GraphicClass.Create;
       WizardImage.LoadFromStream(MemStream);
     finally
       MemStream.Free;
